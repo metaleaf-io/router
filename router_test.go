@@ -87,6 +87,12 @@ func TestRouter_ServeHTTP(t *testing.T) {
 		if p != "ddd" {
 			t.Errorf("Param ccc failed. Expected:baz Actual:%s", p)
 		}
+
+		writer.WriteHeader(200)
+	})
+
+	router.AddRoute("GET", "/", func(writer http.ResponseWriter, request *Request) {
+		writer.WriteHeader(200)
 	})
 
 	server := httptest.NewServer(router)
@@ -100,6 +106,15 @@ func TestRouter_ServeHTTP(t *testing.T) {
 
 	if res.StatusCode != 200 {
 		t.Errorf("Response code failed. Expected:200 Actual:%d", res.StatusCode)
+	}
+
+	request = server.URL + "/"
+	res, err = http.Get(request)
+	if err != nil {
+		t.Errorf("Get / failed with %v", err)
+	}
+	if res.StatusCode != 200 {
+		t.Error("GET / expected 200 actual", res.StatusCode)
 	}
 }
 

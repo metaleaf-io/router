@@ -66,12 +66,14 @@ func (router *Router) AddRoute(verb string, path string, handler Handler) *Route
 
 	// Converts params in the path from "{param}" to a non-greedy regex named
 	// match, "(?P<param>.+?)"
-	path = strings.TrimRight(path, "/")
-	submatches := paramRE.FindAllString(path, -1)
-	for _, s := range submatches {
-		path = strings.Replace(path, s, "(?P<"+strings.Trim(s, "{}")+">.+?)", 1)
+	if path != "/" {
+		path = strings.TrimRight(path, "/")
+		submatches := paramRE.FindAllString(path, -1)
+		for _, s := range submatches {
+			path = strings.Replace(path, s, "(?P<"+strings.Trim(s, "{}")+">.+?)", 1)
+		}
+		path = "^" + path + "$"
 	}
-	path = "^" + path + "$"
 
 	// Compile the path regex
 	re, err := regexp.Compile(path)
