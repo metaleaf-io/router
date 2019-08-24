@@ -16,9 +16,8 @@
 package router
 
 import (
-	"log"
+	"github.com/metaleaf-io/log"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 )
@@ -53,7 +52,6 @@ type route struct {
 // Some globals to make life easier.
 var (
 	paramRE = regexp.MustCompile("{(.+?)}")
-	logger  = log.New(os.Stdout, "", log.LstdFlags|log.Lmicroseconds)
 )
 
 // NewRouter initializes a new HTTP request httprouter.
@@ -64,7 +62,7 @@ func NewRouter() *Router {
 // Adds a new route with a handler function. The router structure is also
 // returned to allow chaining.
 func (router *Router) AddRoute(verb string, path string, handler Handler) *Router {
-	logger.Printf("Adding route %s %s", verb, path)
+	log.Info("Adding route", log.String("verb", verb), log.String("path", path))
 
 	// Converts params in the path from "{param}" to a non-greedy regex named
 	// match, "(?P<param>.+?)"
@@ -78,7 +76,7 @@ func (router *Router) AddRoute(verb string, path string, handler Handler) *Route
 	// Compile the path regex
 	re, err := regexp.Compile(path)
 	if err != nil {
-		logger.Fatal(err)
+		log.Error("Invalid path regex", log.Err("error", err))
 	}
 
 	// Adds the route if no errors occurred the regex compiler.
@@ -109,7 +107,7 @@ func (router *Router) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 			return
 		}
 	}
-	logger.Printf("Path [%s] not found", request.URL.Path)
+	log.Warn("Path not found", log.String("path", request.URL.Path))
 	writer.WriteHeader(404)
 }
 
