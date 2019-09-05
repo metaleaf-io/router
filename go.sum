@@ -1,3 +1,5 @@
 github.com/metaleaf-io/assert v0.1.0/go.mod h1:YPGY8UWCC20s+KBUAc9bm9W3dCfo2yct3xoFctBeSyM=
 github.com/metaleaf-io/log v0.2.0 h1:2zAeDY1U+Pch+priPqtp6Y7qkt4hKX2tl17EGKOSlN4=
 github.com/metaleaf-io/log v0.2.0/go.mod h1:4Yv9jlqRzvO31bSZJXSyDcmZZonFXQNAACTHt8WZGMk=
+github.com/metaleaf-io/log v0.3.0 h1:/Ya/g+wJEYivE12O9DTjzLnSJUTdCDmI//04F6SrLvQ=
+github.com/metaleaf-io/log v0.3.0/go.mod h1:4Yv9jlqRzvO31bSZJXSyDcmZZonFXQNAACTHt8WZGMk=

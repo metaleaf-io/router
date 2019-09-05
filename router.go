@@ -78,7 +78,7 @@ func (router *Router) AddRoute(verb string, path string, handler Handler) *Route
 	// Compile the path regex
 	re, err := regexp.Compile(path)
 	if err != nil {
-		log.Error("Invalid path regex", log.Err("error", err))
+		log.Error("Invalid path regex", log.Err(err))
 	}
 
 	// Adds the route if no errors occurred the regex compiler.
