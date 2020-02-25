@@ -16,30 +16,20 @@
 package router
 
 import (
+	"context"
 	"github.com/metaleaf-io/log"
 	"net/http"
 	"regexp"
 	"strings"
 )
 
-// Enhances the regular http.Request structure by adding the parameters
-type Request struct {
-	// The original request structure.
-	*http.Request
-
-	// Parameters are a hash of key/value strings. These are extracted from
-	// the URL path and the query that appears after a question mark "?" in
-	// the path.
-	Params map[string]string
-}
-
-// Prototype for the handler function.
-type Handler func(http.ResponseWriter, *Request)
-
 // Stores routes added by the application.
 type Router struct {
 	routes []route
 }
+
+// Prototype for the handler function.
+type Handler func(http.ResponseWriter, *http.Request)
 
 // Describes a single route as a combination of HTTP VERB, regular expression
 // path matcher, and the handler function.
@@ -101,16 +91,17 @@ func (router *Router) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 				m[k] = strings.Join(v, "; ")
 			}
 
-			httpRequest := new(Request)
-			httpRequest.Request = request
-			httpRequest.Params = m
-
-			r.handler(writer, httpRequest)
+			r.handler(writer, request.WithContext(context.WithValue(request.Context(), "params", m)))
 			return
 		}
 	}
 	log.Warn("Path not found", log.String("path", request.URL.Path))
 	writer.WriteHeader(404)
+}
+
+// Retrieves query string parameters from the request context.
+func GetParams(ctx context.Context) map[string]string {
+	return ctx.Value("params").(map[string]string)
 }
 
 // Helper that applies the path regex to the incoming path to parse param

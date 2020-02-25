@@ -31,7 +31,7 @@ func TestNewRouter(t *testing.T) {
 
 func TestRouter_AddRoute(t *testing.T) {
 	r := NewRouter()
-	r.AddRoute("GET", "/path/{foo}/{bar}", func(writer http.ResponseWriter, request *Request) {
+	r.AddRoute("GET", "/path/{foo}/{bar}", func(writer http.ResponseWriter, request *http.Request) {
 	})
 
 	if r.routes == nil {
@@ -62,28 +62,30 @@ func TestRouter_AddRoute(t *testing.T) {
 func TestRouter_ServeHTTP(t *testing.T) {
 	// Create the router
 	router := NewRouter()
-	router.AddRoute("GET", "/path/{foo}/{bar}", func(writer http.ResponseWriter, request *Request) {
-		if len(request.Params) != 4 {
+	router.AddRoute("GET", "/path/{foo}/{bar}", func(writer http.ResponseWriter, request *http.Request) {
+		params := GetParams(request.Context())
+
+		if len(params) != 4 {
 			// Test for the params map.
-			t.Errorf("Param failed. Expected \"4\" Actual: \"%d\"", len(request.Params))
+			t.Errorf("Param failed. Expected \"4\" Actual: \"%d\"", len(params))
 		}
 
-		p := request.Params["foo"]
+		p := params["foo"]
 		if p != "fuz" {
 			t.Errorf("Param foo failed. Expected:fuz Actual:%s", p)
 		}
 
-		p = request.Params["bar"]
+		p = params["bar"]
 		if p != "baz" {
 			t.Errorf("Param bar failed. Expected:baz Actual:%s", p)
 		}
 
-		p = request.Params["aaa"]
+		p = params["aaa"]
 		if p != "bbb" {
 			t.Errorf("Param aaa failed. Expected:baz Actual:%s", p)
 		}
 
-		p = request.Params["ccc"]
+		p = params["ccc"]
 		if p != "ddd" {
 			t.Errorf("Param ccc failed. Expected:baz Actual:%s", p)
 		}
@@ -91,7 +93,7 @@ func TestRouter_ServeHTTP(t *testing.T) {
 		writer.WriteHeader(200)
 	})
 
-	router.AddRoute("GET", "/", func(writer http.ResponseWriter, request *Request) {
+	router.AddRoute("GET", "/", func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(200)
 	})
 
@@ -122,14 +124,16 @@ func TestRouter_ServeHTTP(t *testing.T) {
 // parameters and path variables.
 func Example() {
 	// Sample search handler.
-	search := func(writer http.ResponseWriter, request *Request) {
-		fmt.Printf("Search for: \"%s\"\n", request.Params["s"])
+	search := func(writer http.ResponseWriter, request *http.Request) {
+		params := GetParams(request.Context())
+		fmt.Printf("Search for: \"%s\"\n", params["s"])
 		writer.WriteHeader(200)
 	}
 
 	// Sample get resource handler.
-	getBookByIsbn := func(writer http.ResponseWriter, request *Request) {
-		fmt.Printf("Get book with ISBN = %s\n", request.Params["isbn"])
+	getBookByIsbn := func(writer http.ResponseWriter, request *http.Request) {
+		params := GetParams(request.Context())
+		fmt.Printf("Get book with ISBN = %s\n", params["isbn"])
 		writer.WriteHeader(200)
 	}
 
