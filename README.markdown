@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/metaleaf-io/router.svg)](https://travis-ci.org/metaleaf-io/router)
 [![GoDoc](https://godoc.org/github.com/metaleaf-io/router/github?status.svg)](https://godoc.org/github.com/metaleaf-io/router)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Go version](https://img.shields.io/badge/go-~%3E1.11.4-green.svg)](https://golang.org/doc/devel/release.html#go1.11)
+[![Go version](https://img.shields.io/badge/go-~%3E1.13.0-green.svg)](https://golang.org/doc/devel/release.html#go1.11)
 
 This is a simple HTTP router library that does not have built-in support for
 middleware, but that doesn't preclude the use of other middleware libraries.
